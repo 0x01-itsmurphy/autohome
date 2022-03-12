@@ -1,6 +1,6 @@
 # autohome
 
-A new Flutter project.
+A New Flutter project for Monitoring Home Appliances
 
 ## Getting Started
 

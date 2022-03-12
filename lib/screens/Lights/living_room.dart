@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:autohome/decorations/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,24 +27,35 @@ class _LivingRoomSwitchState extends State<LivingRoomSwitch> {
 
   turnOnLed(void toggleLight) async {
     print('Turning on LED');
-    response = await http.get(Uri.parse('http://192.168.4.1/on'),
-        headers: {'Accept': 'text/plain'});
-    setState(() {
-      response = response.body;
-      final status = response.toString();
-      print(status);
-    });
+    try {
+      response = await http.get(Uri.parse('http://192.168.4.1/on'),
+          headers: {'Accept': 'text/plain'});
+      setState(() {
+        response = response.body;
+        final status = response.toString();
+        print(status);
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   turnOffLed(void toggleLight) async {
     print('Turning off LED');
-    response = await http.get(Uri.parse('http://192.168.4.1/off'),
-        headers: {'Accept': 'text/plain'});
-    setState(() {
-      response = response.body;
-      final status = response.toString();
-      print(status);
-    });
+    try {
+      response = await http.get(Uri.parse('http://192.168.4.1/off'),
+          headers: {'Accept': 'text/plain'});
+      setState(() {
+        response = response.body;
+        final status = response.toString();
+        print(status);
+      });
+    } catch (e) {
+      setState(() {
+        response = e.toString();
+      });
+      print(e);
+    }
   }
 
   @override
@@ -55,22 +67,24 @@ class _LivingRoomSwitchState extends State<LivingRoomSwitch> {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
+          Visibility(
+            visible: _isLightOn,
+            child: const Image(
+              image: AssetImage('assets/Icons/lightOn.png'),
+              height: 60,
+              // fit: BoxFit.fill,
             ),
-            decoration: BoxDecoration(
-              // color: Colors.deepPurple[300],
-              color: _isLightOn ? Colors.green : Colors.red,
-              borderRadius: BorderRadius.circular(10),
-            ),
-
-            child: newMethod(),
-
           ),
-          const SizedBox(height: 16),
+          Visibility(
+            visible: _isLightOn == false,
+            child: const Image(
+              image: AssetImage('assets/Icons/lightOff.png'),
+              height: 50,
+              // fit: BoxFit.fill,
+            ),
+          ),
           Text(
             widget.title,
             style: const TextStyle(
@@ -78,29 +92,18 @@ class _LivingRoomSwitchState extends State<LivingRoomSwitch> {
               fontSize: 18,
             ),
           ),
+          CustomButton(
+            onTap: () {
+              if (_isLightOn) {
+                turnOffLed(toggleLight());
+              } else {
+                turnOnLed(toggleLight());
+              }
+            },
+            color: _isLightOn ? Colors.green : Colors.red,
+            text: _isLightOn ? 'Turn Off' : 'Turn On',
+          ),
         ],
-      ),
-    );
-  }
-
-  TextButton newMethod() {
-    return TextButton(
-      onPressed: () {
-        if (_isLightOn) {
-          turnOffLed(toggleLight());
-        } else {
-          turnOnLed(toggleLight());
-        }
-      },
-      child: Text(
-        _isLightOn ? 'Turn Off' : 'Turn On',
-        style: const TextStyle(
-          fontSize: 20,
-          // color: _isLightOn
-          //     ? Colors.redAccent
-          //     : Colors.blueAccent,
-          color: Colors.white,
-        ),
       ),
     );
   }

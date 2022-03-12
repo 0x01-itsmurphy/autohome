@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:autohome/decorations/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -58,44 +59,41 @@ class _LightsContainerState extends State<LightsContainer> {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-            ),
-            decoration: BoxDecoration(
-              // color: Colors.deepPurple[300],
-              color: _isLightOn ? Colors.green : Colors.red,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: TextButton(
-              onPressed: () {
-                if (_isLightOn) {
-                  turnOffLed(toggleLight());
-                } else {
-                  turnOnLed(toggleLight());
-                }
-              },
-              child: Text(
-                _isLightOn ? 'Turn Off' : 'Turn On',
-                style: const TextStyle(
-                  fontSize: 20,
-                  // color: _isLightOn
-                  //     ? Colors.redAccent
-                  //     : Colors.blueAccent,
-                  color: Colors.white,
-                ),
-              ),
+          Visibility(
+            visible: _isLightOn,
+            child: const Image(
+              image: AssetImage('assets/Icons/lightOn.png'),
+              height: 60,
+              // fit: BoxFit.fill,
             ),
           ),
-          const SizedBox(height: 16),
+          Visibility(
+            visible: _isLightOn == false,
+            child: const Image(
+              image: AssetImage('assets/Icons/lightOff.png'),
+              height: 50,
+              // fit: BoxFit.fill,
+            ),
+          ),
           Text(
             widget.title,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
             ),
+          ),
+          CustomButton(
+            onTap: () {
+              if (_isLightOn) {
+                turnOffLed(toggleLight());
+              } else {
+                turnOnLed(toggleLight());
+              }
+            },
+            color: _isLightOn ? Colors.green : Colors.red,
+            text: _isLightOn ? 'Turn Off' : 'Turn On',
           ),
         ],
       ),

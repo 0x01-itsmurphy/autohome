@@ -1,11 +1,13 @@
 // ignore_for_file: avoid_print, prefer_typing_uninitialized_variables
 
+import 'dart:async';
+import 'dart:io';
+
 import 'package:autohome/decorations/lights_container.dart';
 import 'package:autohome/decorations/pages_header_container.dart';
 import 'package:autohome/screens/Lights/living_room.dart';
-import 'package:autohome/services/time.dart';
+// import 'package:autohome/services/time.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_switch/flutter_switch.dart';
 import 'package:http/http.dart' as http;
 
 class LightScreen extends StatefulWidget {
@@ -28,13 +30,26 @@ class _LightScreenState extends State<LightScreen> {
 
   turnOnLed(void toggleLight) async {
     print('Turning on LED');
-    response = await http.get(Uri.parse('http://192.168.4.1/on'),
-        headers: {'Accept': 'text/plain'});
-    setState(() {
-      response = response.body;
-      final status = response.toString();
-      print(status);
-    });
+    try {
+      response = await http.get(
+        Uri.parse('http://192.168.4.1/on'),
+        headers: {'Accept': 'text/plain'},
+      );
+      setState(() {
+        response = response.body;
+        final status = response.toString();
+        print(status);
+      });
+    } catch (e) {
+      print(e);
+      if (e is SocketException) {
+        print('SocketException ${e.toString()}');
+      } else if (e is TimeoutException) {
+        print('TimeoutException ${e.toString()}');
+      } else {
+        print('Unknown exception ${e.toString()}');
+      }
+    }
   }
 
   turnOffLed(void toggleLight) async {
@@ -53,7 +68,7 @@ class _LightScreenState extends State<LightScreen> {
     return Scaffold(
       backgroundColor: Colors.indigo[900],
       appBar: AppBar(
-        title: Time(formatedTime),
+        // title: Time(formatedTime),
         centerTitle: true,
         elevation: 0,
       ),
@@ -63,7 +78,6 @@ class _LightScreenState extends State<LightScreen> {
             title: 'Lights',
             description: 'Turn on and off the lights',
           ),
-
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -73,12 +87,7 @@ class _LightScreenState extends State<LightScreen> {
                 crossAxisSpacing: 16,
                 childAspectRatio: 0.8,
                 children: const <Widget>[
-                  // LightsContainer(
-                  //   title: 'Living Room',
-                  // ),
                   LivingRoomSwitch(title: "Living Room"),
-                  // ignore: todo
-                  // TODO: Add more lights
                   LightsContainer(title: 'Kitchen'),
                   LightsContainer(title: 'Bedroom'),
                   LightsContainer(title: 'Bathroom'),
@@ -86,7 +95,6 @@ class _LightScreenState extends State<LightScreen> {
               ),
             ),
           ),
-
           Center(
             child: TextButton(
               onPressed: () {
@@ -107,20 +115,6 @@ class _LightScreenState extends State<LightScreen> {
               ),
             ),
           ),
-
-          // ToggleButtons(
-          //   children: const <Widget>[
-          //       Icon(Icons.add_comment),
-          //       Icon(Icons.airline_seat_individual_suite),
-          //       Icon(Icons.add_location),
-          //     ],
-          //   isSelected: _isLightOn,
-          //   onPressed: (int index) {
-          //     setState(() {
-          //       _isLightOn = !_isLightOn;
-          //     });
-          //   },
-          // )
         ],
       ),
     );

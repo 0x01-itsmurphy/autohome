@@ -7,8 +7,7 @@ import 'package:intl/intl.dart';
 // String currentTime =
 //     "${now.hour.toString()}:${now.minute.toString()}:${now.second.toString()}";
 
-
-  var formatedTime = DateFormat('HH:mm:ss').format(DateTime.now());
+var formatedTime = DateFormat('HH:mm:ss').format(DateTime.now());
 
 class Time extends StatefulWidget {
   const Time(String currentTime, {Key? key}) : super(key: key);
@@ -18,12 +17,11 @@ class Time extends StatefulWidget {
 }
 
 class _TimeState extends State<Time> {
-
   @override
   void initState() {
     super.initState();
-    Timer.periodic(const Duration(seconds: 1), (timer) {
 
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       // ------------- Logic to update the time per minute -----------------
       // var previousTime = DateTime.now().add(Duration(seconds: -1) ).minute;
       // var currentTime = DateTime.now().minute;

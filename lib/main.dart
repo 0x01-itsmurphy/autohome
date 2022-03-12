@@ -1,4 +1,4 @@
-import 'package:autohome/screens/home_screen.dart';
+import 'package:autohome/screens/HomeScreens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
@@ -17,4 +17,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
